@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Calculadora de Empratamento</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      background-color: #f9f9f9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    #turnos {
+      margin-bottom: 20px;
+      text-align: center;
+      font-size: 18px;
+    }
+
+    #turnos label {
+      margin: 0 20px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 1000px;
+      background: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    th,
+    td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    input[type="number"] {
+      width: 80px;
+      padding: 5px;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px 24px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s;
+      user-select: none;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    span {
+      font-weight: bold;
+    }
+
+    .tr-destaque {
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>Calculadora de Empratamento</h2>
+
+  <div id="turnos">
+    <label><input type="checkbox" id="manha" checked onclick="toggleTurnos(this)"> Manhã</label>
+    <label><input type="checkbox" id="tarde" onclick="toggleTurnos(this)"> Tarde</label>
+  </div>
+
+  <table>
+    <tr>
+      <th>Prato</th>
+      <th>Previsão</th>
+      <th>Stock Imagem</th>
+      <th>Stock Início</th>
+      <th>Empratar</th>
+    </tr>
+    <script>
+      const nomesPratos = [
+        "Paella", "Arroz de Pato", "Arroz Branco", "Panados Com Arroz", "Macarrão Bolonhesa",
+        "Bacalhau Com Natas", "Esparguete Carbonara", "Fatias Barbacue", "Fatias Peperoni", "Fatias Fiambre/Queijo",
+        "Fatias 4 Queijos", "Frango Asado", "1/2 Frango", "Costelinha", "1/2 Costelinha",
+        "Perna Com Batata", "Patatas Padeiro", "Frango Frito P", "Frango Frito G", "Coxinhas",
+        "Rissois Carne", "Rissoes Leitão", "Rissois Camarão", "Creme de Legumes"
+      ];
+
+      const indices100 = [12, 13, 14, 15, 16, 17, 24]; // Linhas com 100% previsão
+
+      for (let i = 0; i < nomesPratos.length; i++) {
+        const index = i + 1;
+        const classe = indices100.includes(index) ? 'tr-destaque' : '';
+        document.write(`<tr class="${classe}">
+          <td>${nomesPratos[i]}</td>
+          <td><input type="number" id="p${index}" /></td>
+          <td><input type="number" id="si${index}" /></td>
+          <td><input type="number" id="sini${index}" /></td>
+          <td><span id="res${index}">-</span></td>
+        </tr>`);
+      }
+    </script>
+  </table>
+
+  <button onclick="calcular()">Calcular Todos</button>
+  <button onclick="imprimir()">Imprimir</button>
+
+  <script>
+    function toggleTurnos(clicked) {
+      const manha = document.getElementById('manha');
+      const tarde = document.getElementById('tarde');
+      if (clicked.id === 'manha' && manha.checked) {
+        tarde.checked = false;
+      } else if (clicked.id === 'tarde' && tarde.checked) {
+        manha.checked = false;
+      }
+    }
+
+    function calcular() {
+      const indices100 = [12, 13, 14, 15, 16, 17, 24];
+      for (let i = 1; i <= 24; i++) {
+        let p = parseFloat(document.getElementById(`p${i}`).value) || 0;
+        let si = parseFloat(document.getElementById(`si${i}`).value) || 0;
+        let sini = parseFloat(document.getElementById(`sini${i}`).value) || 0;
+        let res = indices100.includes(i) ? p : (p * 0.5) + si - sini;
+        document.getElementById(`res${i}`).innerText = Math.round(res).toString();
+      }
+    }
+
+    function imprimir() {
+      const manha = document.getElementById('manha').checked;
+      const tarde = document.getElementById('tarde').checked;
+      if (!manha && !tarde) {
+        alert('Por favor, selecione Manhã ou Tarde antes de imprimir.');
+        return;
+      }
+      const turno = manha ? 'Manhã' : 'Tarde';
+      const hoje = new Date();
+      const dia = String(hoje.getDate()).padStart(2, '0');
+      const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+      const ano = hoje.getFullYear();
+      const dataFormatada = `${dia}/${mes}/${ano}`;
+      let html = `
+        <html>
+          <head>
+            <title>Empratamento LS ${turno} - ${dataFormatada}</title>
+            <style>
+              body { font-family: Arial, sans-serif; padding: 20px; }
+              h2 { text-align: center; margin-bottom: 20px; }
+              table { border-collapse: collapse; width: 100%; max-width: 900px; margin: 0 auto; }
+              th, td { border: 1px solid #999; padding: 8px; text-align: center; }
+              th { background-color: #4CAF50; color: white; }
+              .tr-destaque { background-color: #f0f0f0; }
+            </style>
+          </head>
+          <body>
+            <h2>Empratamento LS ${turno} - ${dataFormatada}</h2>
+            <table>
+              <tr>
+                <th>Prato</th>
+                <th>Previsão</th>
+                <th>Stock Imagem</th>
+                <th>Stock Início</th>
+                <th>Empratar</th>
+              </tr>`;
+
+      for (let i = 1; i <= 24; i++) {
+        const prato = nomesPratos[i - 1];
+        const p = document.getElementById(`p${i}`).value || '0';
+        const si = document.getElementById(`si${i}`).value || '0';
+        const sini = document.getElementById(`sini${i}`).value || '0';
+        const empratar = document.getElementById(`res${i}`).innerText || '-';
+        const rowClass = indices100.includes(i) ? ' class="tr-destaque"' : '';
+        html += `<tr${rowClass}>
+          <td>${prato}</td>
+          <td>${p}</td>
+          <td>${si}</td>
+          <td>${sini}</td>
+          <td>${empratar}</td>
+        </tr>`;
+      }
+
+      html += `
+            </table>
+          </body>
+        </html>`;
+
+      const printWindow = window.open('', '', 'width=900,height=700');
+      printWindow.document.write(html);
+      printWindow.document.close();
+      printWindow.focus();
+      printWindow.print();
+      printWindow.close();
+    }
+  </script>
+</body>
+
+</html>
