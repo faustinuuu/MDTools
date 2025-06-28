@@ -39,8 +39,7 @@
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
 
-    th,
-    td {
+    th, td {
       border: 1px solid #ccc;
       padding: 10px;
       text-align: center;
@@ -101,14 +100,15 @@
     </tr>
     <script>
       const nomesPratos = [
-        "Paella", "Arroz de Pato", "Arroz Branco", "Panados Com Arroz", "Macarrão Bolonhesa",
+        "Paella", "Arroz de Pato", "Arroz Branco", "Panados", "Panados Com Arroz", "Macarrão Bolonhesa",
         "Bacalhau Com Natas", "Esparguete Carbonara", "Fatias Barbacue", "Fatias Peperoni", "Fatias Fiambre/Queijo",
         "Fatias 4 Queijos", "Frango Asado", "1/2 Frango", "Costelinha", "1/2 Costelinha",
         "Perna Com Batata", "Patatas Padeiro", "Frango Frito P", "Frango Frito G", "Coxinhas",
         "Rissois Carne", "Rissoes Leitão", "Rissois Camarão", "Creme de Legumes"
       ];
 
-      const indices100 = [12, 13, 14, 15, 16, 17, 24]; // pratos com 100%
+      // Pratos com 100% de cálculo
+      const indices100 = [13, 14, 15, 16, 17, 18, 25];
 
       for (let i = 0; i < nomesPratos.length; i++) {
         const classeLinha = indices100.includes(i + 1) ? 'linha-cinza' : '';
@@ -130,7 +130,6 @@
     function toggleTurnos(clicked) {
       const manha = document.getElementById('manha');
       const tarde = document.getElementById('tarde');
-
       if (clicked.id === 'manha' && manha.checked) {
         tarde.checked = false;
       } else if (clicked.id === 'tarde' && tarde.checked) {
@@ -139,17 +138,12 @@
     }
 
     function calcular() {
-      const indices100 = [12, 13, 14, 15, 16, 17, 24];
-
       for (let i = 1; i <= 24; i++) {
         let p = parseFloat(document.getElementById(`p${i}`).value) || 0;
         let si = parseFloat(document.getElementById(`si${i}`).value) || 0;
         let sini = parseFloat(document.getElementById(`sini${i}`).value) || 0;
-
         let res = indices100.includes(i) ? p : (p * 0.5) + si - sini;
-
-        let texto = Math.round(res).toString();
-        document.getElementById(`res${i}`).innerText = texto;
+        document.getElementById(`res${i}`).innerText = Math.round(res).toString();
       }
     }
 
@@ -179,6 +173,7 @@
               table { border-collapse: collapse; width: 100%; max-width: 600px; margin: 0 auto; }
               th, td { border: 1px solid #999; padding: 8px; text-align: center; }
               th { background-color: #4CAF50; color: white; }
+              .linha-cinza { background-color: #f0f0f0; }
             </style>
           </head>
           <body>
@@ -191,8 +186,9 @@
 
       for (let i = 1; i <= 24; i++) {
         const prato = nomesPratos[i - 1];
-        const empratar = document.getElementById(`res${i}`).innerText || '0';
-        html += `<tr><td>${prato}</td><td>${empratar}</td></tr>`;
+        const valor = document.getElementById(`res${i}`).innerText || '0';
+        const classeLinha = indices100.includes(i) ? ' class="linha-cinza"' : '';
+        html += `<tr${classeLinha}><td>${prato}</td><td>${valor}</td></tr>`;
       }
 
       html += `

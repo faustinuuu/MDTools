@@ -101,14 +101,15 @@
     </tr>
     <script>
       const nomesPratos = [
-        "Paella", "Arroz de Pato", "Arroz Branco", "Panados Com Arroz", "Macarrão Bolonhesa",
+        "Paella", "Arroz de Pato", "Arroz Branco", "Panados", "Panados Com Arroz", "Macarrão Bolonhesa",
         "Bacalhau Com Natas", "Esparguete Carbonara", "Fatias Barbacue", "Fatias Peperoni", "Fatias Fiambre/Queijo",
         "Fatias 4 Queijos", "Frango Asado", "1/2 Frango", "Costelinha", "1/2 Costelinha",
         "Perna Com Batata", "Patatas Padeiro", "Frango Frito P", "Frango Frito G", "Coxinhas",
         "Rissois Carne", "Rissoes Leitão", "Rissois Camarão", "Creme de Legumes"
       ];
 
-      const indices100 = [12, 13, 14, 15, 16, 17, 24]; // Linhas com 100% previsão
+      // IDs com 100% de cálculo (declarado uma única vez!)
+      const indices100 = [13, 14, 15, 16, 17, 18, 25];
 
       for (let i = 0; i < nomesPratos.length; i++) {
         const index = i + 1;
@@ -139,8 +140,7 @@
     }
 
     function calcular() {
-      const indices100 = [12, 13, 14, 15, 16, 17, 24];
-      for (let i = 1; i <= 24; i++) {
+      for (let i = 1; i <= 25; i++) {
         let p = parseFloat(document.getElementById(`p${i}`).value) || 0;
         let si = parseFloat(document.getElementById(`si${i}`).value) || 0;
         let sini = parseFloat(document.getElementById(`sini${i}`).value) || 0;
@@ -186,7 +186,7 @@
                 <th>Empratar</th>
               </tr>`;
 
-      for (let i = 1; i <= 24; i++) {
+      for (let i = 1; i <= 25; i++) {
         const prato = nomesPratos[i - 1];
         const p = document.getElementById(`p${i}`).value || '0';
         const si = document.getElementById(`si${i}`).value || '0';
